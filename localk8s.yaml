@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: localk8s-deployment
+  labels:
+    app: localk8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: localk8s
+  template:
+    metadata:
+      labels:
+        app: localk8s
+    spec:
+      containers:
+      - name: localk8s
+        command: ["python"]
+        args: ["/usr/src/server.py"]
+        image: localhost:32000/localk8s:latest
+        tty: true
+        stdin: true
+        resources: {}
+        ports:
+        - containerPort: 8888
+        volumeMounts:
+         - mountPath: /usr/src
+           name: kubetest-volume
+      volumes:
+      - name: kubetest-volume
+        hostPath:
+          path: /home/miz/Project/localk8s_dev/tornado
+          type: Directory
+
+...
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: localk8s-deployment
+  labels:
+    app: localk8s
+spec:
+  selector:
+    app: localk8s
+  ports:
+  - name: http
+    port: 8888
+    protocol: TCP
+  type: NodePort
