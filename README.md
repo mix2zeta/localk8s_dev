@@ -1,3 +1,8 @@
+## Require
+
+https://microk8s.io/
+docker
+
 ## build and push
 
 You need `microk8s.enable registry` to push into `localhost:32000`
@@ -5,10 +10,19 @@ then microk8s will find images when run
 you can check how many images with command `microk8s.ctl -n k8s.io images ls` (so yes they just put it in `k8s.io` namespace)
 
 
-## MountVolumn
+## Mount Volume
 
-you can mount just fine but template can't handle relative path ti used it you need helm
-
+you can mount just fine but template can't handle relative path, To used it you need helm.
+```
+volumeMounts:
+    - mountPath: /usr/src
+    name: kubetest-volume
+volumes:
+- name: kubetest-volume
+hostPath:
+    path: /home/miz/Project/localk8s_dev/tornado
+    type: Directory
+```
 
 ## Debug
 
